@@ -1,0 +1,34 @@
+{
+  "users": [
+    {
+      "email": "asdfasdasdfasd",
+      "password": "zxc",
+      "id": 1
+    },
+    {
+      "email": "muzi5@kakao.com",
+      "password": "zxc",
+      "id": 2
+    }
+  ],
+  "boards": [
+    {
+      "email": "test@gmail.com",
+      "contents": "asdf",
+      "isDeleted": false,
+      "id": 1
+    },
+    {
+      "email": "test@gmail.com",
+      "contents": "aaslkdfasldfjalskf",
+      "isDeleted": false,
+      "id": 2
+    },
+    {
+      "email": "muzi5@kakao.com",
+      "contents": "히ㅣ히뿡뿡빵",
+      "isDeleted": false,
+      "id": 3
+    }
+  ]
+}
