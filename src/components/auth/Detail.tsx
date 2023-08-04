@@ -1,7 +1,7 @@
 import axios from "axios";
 import React, { useCallback, useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { getJSDocDeprecatedTag } from "typescript";
+
 interface Props {}
 // 2. detail 페이지 구현
 //     (1) Main.tsx 리스트 방명록 내용 클릭 가능하게 구현
@@ -9,7 +9,16 @@ interface Props {}
 //     (3) Router 수정
 //     (4) Detail.tsx에서는 본문내용, 작성자 이메일 출력
 //     (5) 작성자와 로그인 한 유저가 일치하는 경우, 삭제버튼 활성화(디자인 알아서)
-interface Data {
+
+// 3. 댓글 기능 구현
+//     (1) 댓글 입력 필드 생성
+//     (2) db.json에 reviews 추가
+//         -boardId
+//         - email
+//         - contents
+//         - isDeleted
+//     (3) 방명록과 유사하게 댓글 기능 추가
+export interface CommentData {
   comments: string;
   id: number;
   postNum: number;
@@ -21,13 +30,13 @@ const Detail = ({}: Props): JSX.Element => {
   const { state: data } = useLocation();
   const myEmail = localStorage.getItem("email");
   const { email, contents, isDeleted, id } = data;
-  const [commentData, setCommentData] = useState<Data[]>([]);
+  const [commentData, setCommentData] = useState<CommentData[]>([]);
 
-  const getData = async () => {
+  const getData = useCallback(async () => {
     const response = await axios.get(`${process.env.REACT_APP_SERVER_URL}/comments?postNum=${id}&isDeleted=${false}`);
     // console.log(response.data);
     setCommentData(response.data);
-  };
+  }, []);
   useEffect(() => {
     getData();
   }, [navigate]);
@@ -44,12 +53,12 @@ const Detail = ({}: Props): JSX.Element => {
       console.error(error);
     }
   }, [id]);
-  const onSubmitForm = (e: React.FormEvent<HTMLFormElement>) => {
+  const onSubmitForm = useCallback((e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-  };
-  const onChanInput = (e: React.ChangeEvent<HTMLInputElement>) => {
+  }, []);
+  const onChanInput = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     setComments(e.target.value);
-  };
+  }, []);
 
   const addData = async () => {
     const newComment = {
@@ -67,13 +76,13 @@ const Detail = ({}: Props): JSX.Element => {
     }
   };
 
-  const onCommentDelBtn = (id: number) => {
+  const onCommentDelBtn = useCallback((id: number) => {
     const check = window.confirm("너 정말 삭제할꺼니?");
     if (!check) return;
     axios.delete(`${process.env.REACT_APP_SERVER_URL}/comments/${id}`);
     alert("삭제가 완료됐어 야 !");
     window.location.reload();
-  };
+  }, []);
   return (
     <>
       <h2>{email}</h2>
@@ -104,4 +113,4 @@ const Detail = ({}: Props): JSX.Element => {
   );
 };
 
-export default Detail;
+export default React.memo(Detail);
