@@ -26,9 +26,102 @@
     },
     {
       "email": "muzi5@kakao.com",
-      "contents": "히ㅣ히뿡뿡빵",
+      "contents": "ㅁㄴㅇ",
+      "isDeleted": true,
+      "id": 3,
+      "isDelete": true
+    },
+    {
+      "email": "muzi5@kakao.com",
+      "contents": "123",
+      "isDeleted": true,
+      "id": 4
+    },
+    {
+      "email": "muzi5@kakao.com",
+      "contents": "ㅁㄴㅇ",
+      "isDeleted": true,
+      "id": 5
+    },
+    {
+      "email": "muzi5@kakao.com",
+      "contents": "ㅁㄴㅇ",
+      "isDeleted": true,
+      "id": 6
+    },
+    {
+      "email": "muzi5@kakao.com",
+      "contents": "ㅁㄴㅇㅁㄴㅇ",
+      "isDeleted": true,
+      "id": 7
+    },
+    {
+      "email": "muzi5@kakao.com",
+      "contents": "ㅁㄴㅇㅁㄴㅇ",
+      "isDeleted": true,
+      "id": 8
+    },
+    {
+      "email": "muzi5@kakao.com",
+      "contents": "ㅁㄴㅇㅁㄴㅇㅁㅋ",
+      "isDeleted": true,
+      "id": 9
+    },
+    {
+      "email": "muzi5@kakao.com",
+      "contents": "asd",
+      "isDeleted": true,
+      "id": 10
+    },
+    {
+      "email": "muzi5@kakao.com",
+      "contents": "asd",
+      "isDeleted": true,
+      "id": 11
+    },
+    {
+      "email": "muzi5@kakao.com",
+      "contents": "123",
+      "isDeleted": true,
+      "id": 12
+    },
+    {
+      "email": "muzi5@kakao.com",
+      "contents": "asd",
       "isDeleted": false,
+      "id": 13
+    }
+  ],
+  "comments": [
+    {
+      "comments": "asd",
+      "postNum": 12,
+      "email": "muzi5@kakao.com",
+      "id": 1
+    },
+    {
+      "comments": "5346",
+      "postNum": 12,
+      "email": "muzi5@kakao.com",
       "id": 3
+    },
+    {
+      "comments": "123",
+      "postNum": 13,
+      "email": "muzi5@kakao.com",
+      "id": 4
+    },
+    {
+      "comments": "567",
+      "postNum": 13,
+      "email": "muzi5@kakao.com",
+      "id": 5
+    },
+    {
+      "comments": "435dfvg",
+      "postNum": 13,
+      "email": "muzi5@kakao.com",
+      "id": 6
     }
   ]
 }

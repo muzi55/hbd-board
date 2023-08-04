@@ -2,11 +2,13 @@ import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import { Button, Input } from "antd";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 const Main: React.FC<any> = () => {
   const [data, setData] = useState([]);
   const [contents, setContents] = useState<string>("");
   const authEmail = localStorage.getItem("email");
+  const navigate = useNavigate();
   const fetchData = async () => {
     // alert("TODO 요구사항에 맞추어 기능을 완성해주세요.");
     // TODO: 데이터베이스에서 boards 리스트 가져오기 //=>axios.get
@@ -58,12 +60,20 @@ const Main: React.FC<any> = () => {
   };
 
   const handDelBtn = async (id: any) => {
+    // 1. delete 기능 완성
+    // (1) 삭제기능구현(별도 함수 handleDeleteButtonClick 선언하여 대입)
+    //   - patch로 구현(isDeleted 사용) : 이 때, 리스트 중 삭제된 것은 보이면 안됨
+    // (2) 예측치 못한 오류 발생 시, "데이터를 삭제하는 데에 오류가 발생하였습니다." alert
+    // (3) 성공 시, "작성이 완료되었습니다. 아직 자동 새로고침이 불가하여 수동으로 갱신합니다." alert
+    // (4) 수동 갱신(reload)
     const check = window.confirm("야 너정말 삭제할꺼니 ?");
     if (!check) return;
     try {
       console.log(id);
-      await axios.delete(`${process.env.REACT_APP_SERVER_URL}/boards/${id}`);
-      alert("삭제완료야 야");
+      // await axios.delete(`${process.env.REACT_APP_SERVER_URL}/boards/${id}`);
+      await axios.patch(`${process.env.REACT_APP_SERVER_URL}/boards/${id}`, { isDeleted: true });
+      alert(`삭제완료야 야
+페이지 로딩한다야 `);
       window.location.reload();
     } catch (error) {
       console.error(`${error} 바보 ㅋㅋ`);
@@ -77,22 +87,32 @@ const Main: React.FC<any> = () => {
         <StyledInput placeholder="방명록을 입력해주세요." value={contents} onChange={handleInputChange} />
       </StyledForm>
       <ListWrapper>
-        {data.map((item: any, index) => (
-          <ListItem key={item.id}>
-            <span>
-              {index + 1}. {item.contents}
-            </span>
-            {/* // TODO: 로그인 한 user의 이메일과 일치하는 경우에만 삭제버튼 보이도록 제어//=> 완료 */}
-            {item.email === authEmail && (
-              <Button
-                onClick={() => {
-                  handDelBtn(item.id);
-                }}>
-                삭제
-              </Button>
-            )}
-          </ListItem>
-        ))}
+        {data
+          .filter((el: any) => el.isDeleted === false)
+          .map((item: any, index) => (
+            <ListItem key={item.id}>
+              <span>
+                {index + 1}. {item.contents}
+              </span>
+              {/* // TODO: 로그인 한 user의 이메일과 일치하는 경우에만 삭제버튼 보이도록 제어//=> 완료 */}
+              <div className="Btn-box">
+                {item.email === authEmail && (
+                  <Button
+                    onClick={() => {
+                      handDelBtn(item.id);
+                    }}>
+                    삭제
+                  </Button>
+                )}
+                <Button
+                  onClick={() => {
+                    navigate(`detail/${item.id}`, { state: item });
+                  }}>
+                  상세보기
+                </Button>
+              </div>
+            </ListItem>
+          ))}
       </ListWrapper>
     </MainWrapper>
   );
