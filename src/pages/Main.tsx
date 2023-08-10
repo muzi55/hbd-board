@@ -3,99 +3,84 @@ import styled from "styled-components";
 import { Button, Input } from "antd";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-import { CommentData } from "../components/auth/Detail";
+import { CommentData, Data } from "../types/types";
+import Funcomponents from "../components/Funcomponents";
+import { addBoardData, delBoardData, getBoardData, updateBoardData } from "../api/board";
+import { useQuery, useQueryClient, useMutation } from "@tanstack/react-query";
+import { addCommentsData, delCommentsData, getCommentsData, updateCommentsData } from "../api/comments";
+import Loading from "../components/loading/Loading";
 
 const Main: React.FC<any> = () => {
-  const [data, setData] = useState([]);
-  const [commentData, setCommentData] = useState([]);
+  const [data, setData] = useState<Data[]>([]);
+  const [commentData, setCommentData] = useState<CommentData[]>([]);
   const [contents, setContents] = useState<string>("");
   const authEmail = localStorage.getItem("email");
   const navigate = useNavigate();
-  const fetchData = useCallback(async () => {
-    // alert("TODO 요구사항에 맞추어 기능을 완성해주세요.");
-    // TODO: 데이터베이스에서 boards 리스트 가져오기 //=>axios.get
-    // TODO: 가져온 결과 배열을 data state에 set 하기 //=>setState
-    // TODO: 네트워크 등 기타 문제인 경우, "일시적인 오류가 발생하였습니다. 고객센터로 연락주세요." alert //=>했음
 
-    // 4. 메인 리스트 페이지 수정
-    // (1) 댓글 개수를 방명록 contents 옆에 (2) 형태로 출력 (edited)
-    try {
-      const response = await axios.get(`${process.env.REACT_APP_SERVER_URL}/boards`);
-      const commentData = await axios.get(`${process.env.REACT_APP_SERVER_URL}/comments?isDeleted=${false}`);
-      // console.log(commentData);
-      // console.log(response.data);
-      setData(response.data);
-      setCommentData(commentData.data);
-    } catch (error) {
-      alert('네트워크 등 기타 문제인 경우, "일시적인 오류가 발생하였습니다. 고객센터로 연락주세요.');
-      console.error(error);
-    }
-  }, []);
+  const { isLoading: boardsLoading, isError: boardsError, data: boardsData } = useQuery<Data[]>(["borads"], getBoardData);
+  const { isLoading: commentsLoading, isError: commentsError, data: commentsData } = useQuery(["comments"], getCommentsData);
+  // 쿼리
+  const queryClient = useQueryClient();
 
-  useEffect(() => {
-    // TODO: 해당 useEffect는 최초 마운트시에만 동작하게 제어//=>desp[]
-    fetchData();
-  }, []);
+  const boardMutationAdd = useMutation(addBoardData, {
+    onSuccess: () => {
+      queryClient.invalidateQueries(["borads"]);
+    },
+  });
+  const boardMutationUpdate = useMutation(updateBoardData, {
+    onSuccess: () => {
+      queryClient.invalidateQueries(["borads"]);
+    },
+  });
+  // 쿼리
+  const handleBoardSubmit = useCallback(
+    async (e: React.FormEvent<HTMLFormElement>) => {
+      e.preventDefault();
+      console.log(contents);
+      try {
+        if (contents === "") {
+          return alert("야 제대로좀 써 ");
+        }
 
-  const handleBoardSubmit = useCallback(async (e: any) => {
-    e.preventDefault();
-    try {
-      if (contents === "") {
-        return alert("야 제대로좀 써 ");
+        const newboards = {
+          email: authEmail,
+          contents,
+          isDeleted: false,
+        };
+        boardMutationAdd.mutate(newboards);
+        // window.location.reload();
+      } catch (error) {
+        console.error(error);
+        alert("일시적인 오류가 발생하였습니다. 고객센터로 연락주세요.");
       }
-      const newboards = {
-        email: authEmail,
-        contents,
-        isDeleted: false,
-      };
-      await axios.post(`${process.env.REACT_APP_SERVER_URL}/boards`, newboards);
-      alert("작성이 완료되었습니다. 아직 자동 새로고침이 불가하여 수동으로 갱신합니다.");
-      window.location.reload();
-    } catch (error) {
-      console.error(error);
-      alert("일시적인 오류가 발생하였습니다. 고객센터로 연락주세요.");
-    }
+    },
+    [contents]
+  );
 
-    // alert("TODO 요구사항에 맞추어 기능을 완성해주세요.");
-    // TODO: 자동 새로고침 방지 //=> hashrouter
-    // TODO: 이메일과 contents를 이용하여 post 요청 등록(isDeleted 기본값은 false) //=>완료
-    // TODO: 네트워크 등 기타 문제인 경우, "일시적인 오류가 발생하였습니다. 고객센터로 연락주세요." alert //=>완료
-    // TODO: 성공한 경우, "작성이 완료되었습니다. 아직 자동 새로고침이 불가하여 수동으로 갱신합니다." alert //=>완료
-    // TODO: 처리완료 후, reload를 이용하여 새로고침
-  }, []);
-
-  const handleInputChange = useCallback((e: any) => {
+  const handleInputChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     setContents(e.target.value);
   }, []);
 
-  const handDelBtn = useCallback(async (id: any) => {
-    // 1. delete 기능 완성
-    // (1) 삭제기능구현(별도 함수 handleDeleteButtonClick 선언하여 대입)
-    //   - patch로 구현(isDeleted 사용) : 이 때, 리스트 중 삭제된 것은 보이면 안됨
-    // (2) 예측치 못한 오류 발생 시, "데이터를 삭제하는 데에 오류가 발생하였습니다." alert
-    // (3) 성공 시, "작성이 완료되었습니다. 아직 자동 새로고침이 불가하여 수동으로 갱신합니다." alert
-    // (4) 수동 갱신(reload)
+  const handDelBtn = useCallback(async (id: number) => {
     const check = window.confirm("야 너정말 삭제할꺼니 ?");
     if (!check) return;
     try {
-      // console.log(id);
-      // await axios.delete(`${process.env.REACT_APP_SERVER_URL}/boards/${id}`);
-      await axios.patch(`${process.env.REACT_APP_SERVER_URL}/boards/${id}`, { isDeleted: true });
-      alert(`삭제완료야 야
-페이지 로딩한다야 `);
-      window.location.reload();
+      boardMutationUpdate.mutate(id);
+      alert(`삭제완료야 야 `);
     } catch (error) {
       console.error(`${error} 바보 ㅋㅋ`);
     }
   }, []);
 
-  // 만능리듀서 => 댓글조회
+  // 만능리듀스 => 댓글조회
   const getCountComment = (arr: CommentData[], el: number) => {
     return arr.reduce((acc: any, current: CommentData): number => {
       return acc + (current.postNum === el);
     }, 0);
   };
 
+  if (boardsLoading || commentsLoading) return <Loading />;
+  if (boardsLoading || commentsLoading) return <div>에러야 바보</div>;
   return (
     <MainWrapper>
       <h1>메인 리스트 페이지</h1>
@@ -103,12 +88,12 @@ const Main: React.FC<any> = () => {
         <StyledInput placeholder="방명록을 입력해주세요." value={contents} onChange={handleInputChange} />
       </StyledForm>
       <ListWrapper>
-        {data
-          .filter((el: any) => el.isDeleted === false)
-          .map((item: any, index) => (
+        {boardsData
+          ?.filter((el: any) => el.isDeleted === false)
+          .map((item: Data, index) => (
             <ListItem key={item.id}>
               <span>
-                {index + 1}. {item.contents} 댓글수( {getCountComment(commentData, item.id)})
+                {index + 1}. {item.contents} 댓글수 ( {getCountComment(commentData, item.id)} )
               </span>
               {/* // TODO: 로그인 한 user의 이메일과 일치하는 경우에만 삭제버튼 보이도록 제어//=> 완료 */}
               <div className="Btn-box">

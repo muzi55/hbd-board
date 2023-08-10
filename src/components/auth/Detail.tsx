@@ -2,51 +2,61 @@ import axios from "axios";
 import React, { useCallback, useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 
-interface Props {}
-// 2. detail 페이지 구현
-//     (1) Main.tsx 리스트 방명록 내용 클릭 가능하게 구현
-//     (2) Detail.tsx 생성
-//     (3) Router 수정
-//     (4) Detail.tsx에서는 본문내용, 작성자 이메일 출력
-//     (5) 작성자와 로그인 한 유저가 일치하는 경우, 삭제버튼 활성화(디자인 알아서)
+import { CommentData, addCommentData } from "../../types/types";
+import { Button } from "antd";
+import { useQuery, useQueryClient, useMutation } from "@tanstack/react-query";
+import { addCommentsData, delCommentsData, getCommentsData, updateCommentsData } from "../../api/comments";
+import { updateBoardData } from "../../api/board";
 
-// 3. 댓글 기능 구현
-//     (1) 댓글 입력 필드 생성
-//     (2) db.json에 reviews 추가
-//         -boardId
-//         - email
-//         - contents
-//         - isDeleted
-//     (3) 방명록과 유사하게 댓글 기능 추가
-export interface CommentData {
-  comments: string;
-  id: number;
-  postNum: number;
-  email: string;
-}
+interface Props {}
+
 const Detail = ({}: Props): JSX.Element => {
+  const localToken = localStorage.getItem("token");
+  const localEmail = localStorage.getItem("email");
+
   const [comments, setComments] = useState<string>("");
+  const [newData, setNewData] = useState<CommentData[]>([]);
   const navigate = useNavigate();
   const { state: data } = useLocation();
   const myEmail = localStorage.getItem("email");
   const { email, contents, isDeleted, id } = data;
-  const [commentData, setCommentData] = useState<CommentData[]>([]);
 
-  const getData = useCallback(async () => {
-    const response = await axios.get(`${process.env.REACT_APP_SERVER_URL}/comments?postNum=${id}&isDeleted=${false}`);
-    // console.log(response.data);
-    setCommentData(response.data);
-  }, []);
+  const { isLoading: commentsLoading, isError: commentsError, data: commentsData } = useQuery<CommentData[]>(["comments"], getCommentsData);
   useEffect(() => {
-    getData();
-  }, [navigate]);
+    if (typeof commentsData !== "undefined") {
+      setNewData(commentsData);
+    }
+  }, [commentsData]);
+
+  const queryClient = useQueryClient();
+  const commentsMutationAdd = useMutation(addCommentsData, {
+    onSuccess: () => {
+      queryClient.invalidateQueries(["comments"]);
+    },
+  });
+  const commentsMutationDel = useMutation(delCommentsData, {
+    onSuccess: () => {
+      queryClient.invalidateQueries(["comments"]);
+    },
+  });
+  const commentsMutationUpdate = useMutation(updateCommentsData, {
+    onSuccess: () => {
+      queryClient.invalidateQueries(["comments"]);
+    },
+  });
+  const boardMutationUpdate = useMutation(updateBoardData, {
+    onSuccess: () => {
+      queryClient.invalidateQueries(["borads"]);
+    },
+  });
 
   const onClickDelBtn = useCallback(async () => {
     const check = window.confirm("야 너 삭제할꺼냐?");
     if (!check) return;
     try {
-      axios.patch(`${process.env.REACT_APP_SERVER_URL}/boards/${id}`, { isDeleted: true });
-      alert("야 삭제했어");
+      boardMutationUpdate.mutate(id);
+      // axios.patch(`${process.env.REACT_APP_SERVER_URL}/boards/${id}`, { isDeleted: true });
+      // alert("야 삭제했어");
 
       navigate("/");
     } catch (error) {
@@ -60,29 +70,25 @@ const Detail = ({}: Props): JSX.Element => {
     setComments(e.target.value);
   }, []);
 
-  const addData = async () => {
-    const newComment = {
+  // 추가
+  const addData = () => {
+    const newComment: addCommentData = {
       comments,
       postNum: id,
       email: localStorage.getItem("email"),
     };
-    try {
-      await axios.post(`${process.env.REACT_APP_SERVER_URL}/comments`, newComment);
-      alert("야 추가완료야");
-    } catch (error) {
-      console.error(error);
-    } finally {
-      window.location.reload();
-    }
+    commentsMutationAdd.mutate(newComment);
   };
 
+  // 삭제
   const onCommentDelBtn = useCallback((id: number) => {
     const check = window.confirm("너 정말 삭제할꺼니?");
     if (!check) return;
-    axios.delete(`${process.env.REACT_APP_SERVER_URL}/comments/${id}`);
+    commentsMutationDel.mutate(id);
     alert("삭제가 완료됐어 야 !");
-    window.location.reload();
   }, []);
+
+  if (commentsLoading) return <div>히히뿡</div>;
   return (
     <>
       <h2>{email}</h2>
@@ -103,12 +109,16 @@ const Detail = ({}: Props): JSX.Element => {
         <button onClick={addData}>입력</button>
       </form>
       <hr />
-      {commentData.map((el, index) => (
+      {console.log(newData)}
+      {newData?.map((el, index) => (
         <div key={el.id + index} style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
           <p>{el.comments}</p>
-          <button onClick={() => onCommentDelBtn(el.id)}>삭제</button>
+          {myEmail === el.email && <button onClick={() => onCommentDelBtn(el.id)}>삭제</button>}
         </div>
       ))}
+      <Button style={{ position: "absolute", top: "0", left: 0 }} onClick={() => navigate("/")}>
+        메인으로
+      </Button>
     </>
   );
 };

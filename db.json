@@ -9,6 +9,11 @@
       "email": "muzi5@kakao.com",
       "password": "zxc",
       "id": 2
+    },
+    {
+      "email": "muzi55@kakao.com",
+      "password": "zxc",
+      "id": 3
     }
   ],
   "boards": [
@@ -26,44 +31,43 @@
     },
     {
       "email": "muzi5@kakao.com",
-      "contents": "ㅁㄴㅇ",
+      "contents": "345",
       "isDeleted": true,
-      "id": 3,
-      "isDelete": true
+      "id": 3
     },
     {
       "email": "muzi5@kakao.com",
-      "contents": "123",
+      "contents": "453",
       "isDeleted": true,
       "id": 4
     },
     {
       "email": "muzi5@kakao.com",
-      "contents": "ㅁㄴㅇ",
+      "contents": "453",
       "isDeleted": true,
       "id": 5
     },
     {
       "email": "muzi5@kakao.com",
-      "contents": "ㅁㄴㅇ",
+      "contents": "453123",
       "isDeleted": true,
       "id": 6
     },
     {
       "email": "muzi5@kakao.com",
-      "contents": "ㅁㄴㅇㅁㄴㅇ",
+      "contents": "asd",
       "isDeleted": true,
       "id": 7
     },
     {
       "email": "muzi5@kakao.com",
-      "contents": "ㅁㄴㅇㅁㄴㅇ",
+      "contents": "asdasd",
       "isDeleted": true,
       "id": 8
     },
     {
       "email": "muzi5@kakao.com",
-      "contents": "ㅁㄴㅇㅁㄴㅇㅁㅋ",
+      "contents": "ㅁㄴㅇ",
       "isDeleted": true,
       "id": 9
     },
@@ -72,92 +76,14 @@
       "contents": "asd",
       "isDeleted": true,
       "id": 10
-    },
-    {
-      "email": "muzi5@kakao.com",
-      "contents": "asd",
-      "isDeleted": true,
-      "id": 11
-    },
-    {
-      "email": "muzi5@kakao.com",
-      "contents": "123",
-      "isDeleted": true,
-      "id": 12
-    },
-    {
-      "email": "muzi5@kakao.com",
-      "contents": "asd",
-      "isDeleted": true,
-      "id": 13
-    },
-    {
-      "email": "muzi5@kakao.com",
-      "contents": "567",
-      "isDeleted": false,
-      "id": 14
     }
   ],
   "comments": [
     {
-      "comments": "asd",
-      "postNum": 12,
-      "email": "muzi5@kakao.com",
-      "id": 1
-    },
-    {
-      "comments": "5346",
-      "postNum": 12,
-      "email": "muzi5@kakao.com",
-      "id": 3
-    },
-    {
-      "comments": "123",
-      "postNum": 13,
-      "email": "muzi5@kakao.com",
-      "id": 4
-    },
-    {
-      "comments": "567",
-      "postNum": 13,
+      "comments": "asdasd",
+      "postNum": 1,
       "email": "muzi5@kakao.com",
       "id": 5
-    },
-    {
-      "comments": "435dfvg",
-      "postNum": 13,
-      "email": "muzi5@kakao.com",
-      "id": 6
-    },
-    {
-      "comments": "123",
-      "postNum": 1,
-      "email": "muzi5@kakao.com",
-      "id": 7
-    },
-    {
-      "comments": "123123",
-      "postNum": 1,
-      "email": "muzi5@kakao.com",
-      "id": 8
-    },
-    {
-      "comments": "4657",
-      "postNum": 1,
-      "email": "muzi5@kakao.com",
-      "id": 9
-    },
-    {
-      "comments": "657",
-      "postNum": 2,
-      "email": "muzi5@kakao.com",
-      "id": 10
-    },
-    {
-      "comments": "567",
-      "postNum": 14,
-      "email": "muzi5@kakao.com",
-      "id": 11
     }
   ]
 }
