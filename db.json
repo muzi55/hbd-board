@@ -76,6 +76,18 @@
       "contents": "asd",
       "isDeleted": true,
       "id": 10
+    },
+    {
+      "email": "muzi5@kakao.com",
+      "contents": "123",
+      "isDeleted": false,
+      "id": 11
+    },
+    {
+      "email": "muzi5@kakao.com",
+      "contents": "123asd",
+      "isDeleted": false,
+      "id": 12
     }
   ],
   "comments": [
@@ -84,6 +96,12 @@
       "postNum": 1,
       "email": "muzi5@kakao.com",
       "id": 5
+    },
+    {
+      "comments": "asd",
+      "postNum": 11,
+      "email": "muzi5@kakao.com",
+      "id": 6
     }
   ]
 }

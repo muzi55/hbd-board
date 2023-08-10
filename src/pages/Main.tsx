@@ -48,6 +48,7 @@ const Main: React.FC<any> = () => {
           isDeleted: false,
         };
         boardMutationAdd.mutate(newboards);
+        setContents("");
         // window.location.reload();
       } catch (error) {
         console.error(error);

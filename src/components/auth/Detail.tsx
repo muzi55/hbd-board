@@ -78,6 +78,7 @@ const Detail = ({}: Props): JSX.Element => {
       email: localStorage.getItem("email"),
     };
     commentsMutationAdd.mutate(newComment);
+    setComments("");
   };
 
   // 삭제
